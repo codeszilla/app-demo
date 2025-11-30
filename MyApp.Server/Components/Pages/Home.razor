@@ -1,0 +1,131 @@
+﻿@page "/"
+@using MyApp.Server.Components.IntOps
+
+@inject JwtAuthService Auth
+@inject NavigationManager Nav
+@inject IJSRuntime JS
+
+<PageTitle>APP CRUD DEMO </PageTitle>
+
+<div class="dashboard-card  bg-white  rounded mx-auto" style="">
+   
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+
+                <div class="text-left mb-4">
+                    <h3 class="fw-bold text-primary">Welcome!</h3>
+                    <hr class="border-primary" />
+                </div>
+
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body bg-light p-4">
+                        <p>
+                            <span class="fs-5">Hi <strong><Info details="evaluator" /></strong>,</span>
+                        </p>
+
+                        <p>
+                            I’m glad you’re here to review my practical exam.
+                            I truly appreciate you taking the time to go through my work.
+                            Your insights and feedback are highly valued and will help me grow.
+                        </p>
+
+                        <p>
+                           
+                            Thank you again for your effort and attention!
+                        </p>
+
+                    </div>
+                </div>
+
+         
+
+            </div>
+        </div>
+    </div>
+    <hr class="border-primary" />
+
+
+    <NavLink href="/crudops" class="text-left text-primary mb-3 text-decoration-none d-inline-flex align-items-center">
+        <i class="bi bi-arrow-right-circle-fill me-2 blink-icon"></i>
+        <h3 class="mb-0">Blazor .NET EF Core CRUD Ops   </h3>
+    </NavLink>
+
+
+
+    <p class="text-left text-muted mb-4 ps-4">
+        This is a server-based system designed to showcase practical examples of CRUD operations, specifically centered around a simple <strong>Company Departmental Reference</strong> model.
+        It demonstrates how departmental data can be efficiently created, read, updated, and deleted.
+    </p>
+
+<div class="mb-4 ps-4">
+    <h5 class="text-secondary mb-3">Operations Requirements:</h5>
+    <ul class="list-unstyled ms-3">
+        <li class="mb-2">
+            <span class="badge bg-primary me-2">Create</span>
+            Add new records to the database.
+        </li>
+        <li class="mb-2">
+            <span class="badge bg-success me-2">Read</span>
+            Retrieve and display existing records.
+        </li>
+        <li class="mb-2">
+            <span class="badge bg-warning text-dark me-2">Update</span>
+            Modify existing records with new data.
+        </li>
+        <li class="mb-2">
+            <span class="badge bg-danger me-2">Delete</span>
+            Remove records from the database.
+        </li>
+    </ul>
+</div>
+
+<div class="mb-4 ps-4">
+    <h5 class="text-secondary mb-3">Technologies Requirements:</h5>
+    <ul class="list-unstyled d-flex flex-column gap-3 ms-3">
+        <li class="d-flex align-items-start gap-2">
+            <img src="img/svg/splash/blazor.svg" alt="Blazor Logo" style="height:20px; width:auto; margin-top:3px;">
+            <div>
+                <span class="badge bg-info me-2">Blazor Server</span>
+                Provides the framework to build interactive web UIs using C# instead of JavaScript.
+            </div>
+        </li>
+        <li class="d-flex align-items-start gap-2">
+            <img src="img/svg/splash/dotnet.svg" alt=".NET Logo" style="height:20px; width:auto; margin-top:3px;">
+            <div>
+                <span class="badge bg-secondary me-2">.NET 8</span>
+                The runtime and framework for building and running server-side applications.
+            </div>
+        </li>
+        <li class="d-flex align-items-start gap-2">
+            <img src="img/svg/splash/efc.svg" alt="EF Core Logo" style="height:20px; width:auto; margin-top:3px;">
+            <div>
+                <span class="badge bg-dark me-2">EF Core</span>
+                Entity Framework Core for database interactions, including CRUD operations.
+            </div>
+        </li>
+    </ul>
+</div>
+
+
+
+
+
+   
+</div>
+
+
+
+
+
+@code {
+
+
+
+
+
+
+
+
+
+}

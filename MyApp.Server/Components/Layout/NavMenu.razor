@@ -1,0 +1,36 @@
+﻿<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">APP-CRUD-DEMO</a>
+
+    </div>
+</div>
+
+<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
+
+<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler')?.click()">
+    <nav class="flex-column">
+     
+        <div class="nav-item px-3 mb-2">
+            <NavLink class="nav-link d-flex align-items-center" href="" Match="NavLinkMatch.All">
+                <span class=" bi-house-door-fill me-2"></span>
+                Welcome
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3 mb-2">
+            <NavLink class="nav-link d-flex align-items-center" href="crudops" Match="NavLinkMatch.All">
+                <span class=" bi-kanban-fill me-2"></span>
+                CRUD OPS (DEMO)
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3 mb-2">
+            <NavLink class="nav-link d-flex align-items-center" href="exit" Match="NavLinkMatch.All">
+                <span class="bi-box-arrow-right me-2"></span>
+                Exit
+            </NavLink>
+        </div>
+    </nav>
+</div>
+
+

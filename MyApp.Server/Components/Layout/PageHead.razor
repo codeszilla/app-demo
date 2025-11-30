@@ -1,0 +1,14 @@
+﻿
+@inject AuthService Auth
+
+<span style="margin-right:20px">@info.NickName</span>
+
+@code {
+
+    private _Info info = new _Info();
+    protected override void OnInitialized()
+    {
+        info = Auth.GetAccountInfo();      
+    }
+
+}

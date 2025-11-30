@@ -1,0 +1,24 @@
+﻿@inject AuthService Auth
+
+<span>@r_info</span>
+
+@code {
+
+    [Parameter] public string details { get; set; } = "";
+
+    private _Info info = new _Info();
+    private string r_info = "";
+
+    protected override void OnInitialized()
+    {
+        info = Auth.GetAccountInfo();
+
+      
+        r_info = details?.ToLower() switch
+        {
+            "evaluator" => info?.NickName ?? "Evaluator name not available",
+            "contact" => info?.AccountName ?? "Contact name not available",
+            _ => "Invalid parameter"
+        };
+    }
+}

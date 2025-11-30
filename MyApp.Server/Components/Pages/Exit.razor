@@ -1,0 +1,66 @@
+﻿@page "/exit" 
+
+@using Microsoft.EntityFrameworkCore
+@using MyApp.Server.Models
+@using MyApp.Server.Components.IntOps
+@inject AppDbContext Db
+
+@inject IJSRuntime JS
+@inject AuthService Auth
+
+@rendermode InteractiveServer
+<div class="container mb-3 ">
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+
+            <!-- Header -->
+            <div class="text-left mb-4">
+                <h3 class="fw-bold text-primary">
+                    <i class="bi bi-check-circle-fill me-2"></i> Thank You!
+                </h3>
+                <hr class="border-primary w-100 mx-auto" />
+            </div>
+
+            <!-- Message Card -->
+            <div class="card shadow-lg mb-4 rounded-4 border-0">
+                <div class="card-body bg-light p-5">
+                    <p>
+                      
+                        Hi <strong><Info details="evaluator"/></strong>,
+                    </p>
+
+                    <p>
+                       
+                        I sincerely thank you for taking the time to evaluate my practical exam. I truly appreciate the effort and attention you gave while reviewing my work. Your feedback is invaluable and greatly appreciated.
+                    </p>
+
+                    <p>
+                    
+                        As you leave this page, I want to express my gratitude once again for your time and support. Thank you, and I hope you have a wonderful day!
+                    </p>
+
+
+
+                    <p class="mt-4 fw-semibold text-secondary">
+                      
+                        <i class="bi bi-person-circle me-2"></i>
+                        Allan Pojas Paraiso<br />
+                        <i class="bi bi-globe me-2"></i>
+                        APPSDEV.NET
+                    </p>
+                </div>
+            </div>
+
+            <!-- Logout Button -->
+            <div class="text-center">
+                <LogOutBtn />
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+@code {
+
+}

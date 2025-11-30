@@ -1,0 +1,132 @@
+﻿@page "/welcome"
+@using MyApp.Server.Components.Layout
+@layout SplashLayout
+@inject IJSRuntime JS
+@inject AuthService Auth
+@inject NavigationManager Nav
+@rendermode InteractiveServer
+
+<div class="text-center mt-5">
+    <div class="d-flex justify-content-center align-items-center" style="height:80vh; gap:2rem; flex-wrap:wrap;">
+        <div>
+            <h3>APPSDEV.NET</h3>
+            <img src="/img/app.png" />
+
+            <hr />
+            <span class="text-secondary"><strong>Allan Pojas Paraiso</strong></span>
+            <hr />
+        </div>
+
+        <div class="splash_card p-5" style="max-width: 600px;">
+            <h3 class="text-center mb-3 text-primary">Blazor .NET EF Core CRUD Operation </h3>
+
+            <p class="text-center text-muted mb-4">
+                Practical exam for a server-based system demonstrating Create, Read, Update, and Delete (CRUD) operations using the following:
+            </p>
+
+            <!-- Logos -->
+            <div class="d-flex justify-content-center align-items-center gap-4 mb-4 flex-wrap">
+                <div class="text-center" style="width:100px;">
+                    <img src="img/svg/splash/blazor.svg" style="height:50px;" />
+                    <p class="mt-1 text-muted small">Blazor Server</p>
+                </div>
+                <div class="text-center" style="width:100px;">
+                    <img src="img/svg/splash/dotnet.svg" style="height:50px;" />
+                    <p class="mt-1 text-muted small">.NET 8</p>
+                </div>
+                <div class="text-center" style="width:100px;">
+                    <img src="img/svg/splash/efc.svg" style="height:50px;" />
+                    <p class="mt-1 text-muted small">EF Core</p>
+                </div>
+            </div>
+
+            <p class="text-success mt-2 text-center"> @statusMessage</p>
+                <div class="mb-3 d-flex justify-content-center">
+            
+
+                <input type="text" class="form-control text-center" style="max-width:100%" placeholder="Evaluator Name" @bind="evaluatorName" disabled="@isProcessing" />
+      
+
+               
+        </div>
+        <div>
+            <button class="btn btn-success w-100 " @onclick="Enter">
+                E V A L U A T E
+            </button>
+            </div>
+           
+    </div>
+</div>
+
+
+</div>
+
+
+
+
+@code {
+
+    private string evaluatorName = string.Empty;
+    private string statusMessage = string.Empty;
+    private bool isProcessing = false;
+    private string jwt = "";
+    private ValueTask ToastSuccess(string msg) => JS.InvokeVoidAsync("toastSuccess", msg);
+    private ValueTask ToastWarning(string msg) =>  JS.InvokeVoidAsync("toastWarning", msg);
+
+    private async Task Enter()
+    {    
+        if (string.IsNullOrWhiteSpace(evaluatorName))
+        {
+            await ToastWarning("Your name is required!");
+            return;
+        }
+        else
+        {
+            isProcessing = true;
+
+            statusMessage = "Creating evaluator's token...";
+            await Task.Delay(2000); // aesthetics lang :)
+
+            jwt = Auth.GenerateJwt("evaluator@appsdev.net", "8128", evaluatorName);
+
+            if (string.IsNullOrWhiteSpace(jwt))
+            {
+                isProcessing = false;
+                statusMessage = "Auth token is required!";
+                await ToastWarning(statusMessage);
+                return;
+            }
+
+            await Auth.LoginAsync(jwt);
+            await ToastSuccess("Token accepted and successfully processed.");
+            statusMessage = "Redirecting...";
+            await Task.Delay(2000); // aesthetics lang :)
+                
+            Nav.NavigateTo("/", true);
+
+        }
+
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+        await CheckLogin();
+
+    }
+    private Task CheckLogin()
+    {
+        if (!string.IsNullOrWhiteSpace(Auth.GetToken()))  { Nav.NavigateTo("/", true); }
+        statusMessage = "";
+        StateHasChanged();
+        return Task.CompletedTask;
+
+    }
+
+  
+
+
+
+   
+
+}

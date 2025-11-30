@@ -1,0 +1,31 @@
+﻿@inject JwtAuthService Auth
+@inject NavigationManager Nav
+
+@if (isAuthenticated)
+{
+    @ChildContent
+}
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string Evaluator { get; set; } = "*";
+
+    private bool isAuthenticated;
+
+    protected override void OnInitialized()
+    {
+        isAuthenticated = Auth.IsAuthenticated();
+
+        if (!isAuthenticated)
+        {
+            Nav.NavigateTo("/welcome", true);
+            return;
+        }
+
+
+        if (!string.Equals(Evaluator, "*", StringComparison.Ordinal))
+        {
+            Nav.NavigateTo("/unauthorized", true);
+        }
+    }
+}
