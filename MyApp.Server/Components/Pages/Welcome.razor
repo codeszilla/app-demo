@@ -44,7 +44,8 @@
                 <div class="mb-3 d-flex justify-content-center">
             
 
-                <input type="text" class="form-control text-center" style="max-width:100%" placeholder="Evaluator Name" @bind="evaluatorName" disabled="@isProcessing" />
+                <input type="text" class="form-control text-center" style="max-width:100%" placeholder="Evaluator Name" @bind="evaluatorName" disabled="@isProcessing" onfocus="this.placeholder='';"
+                       onblur="this.placeholder='Evaluator Name';" />
       
 
                
