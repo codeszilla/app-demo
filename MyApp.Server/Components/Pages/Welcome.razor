@@ -44,15 +44,27 @@
                 <div class="mb-3 d-flex justify-content-center">
             
 
-                <input type="text" class="form-control text-center" style="max-width:100%" placeholder="Evaluator Name" @bind="evaluatorName" disabled="@isProcessing" />
+                <input type="text" class="form-control text-center" style="max-width:100%" placeholder="Evaluator Name" @bind="evaluatorName" disabled="@isProcessing" onfocus="this.placeholder='';"
+                       onblur="this.placeholder='Evaluator Name';" />
       
 
                
         </div>
         <div>
-            <button class="btn btn-success w-100 " @onclick="Enter">
-                E V A L U A T E
-            </button>
+                <button class="btn btn-success w-100"
+                        @onclick="Enter"
+                        disabled="@isProcessing">
+
+                    @if (isProcessing)
+                    {
+                        <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                      <span>  Processing...</span>
+                                        }
+                    else
+                    {
+                        <span>  E V A L U A T E</span>
+                                        }
+                </button>
             </div>
            
     </div>
@@ -74,24 +86,25 @@
     private ValueTask ToastWarning(string msg) =>  JS.InvokeVoidAsync("toastWarning", msg);
 
     private async Task Enter()
-    {    
+    {
         if (string.IsNullOrWhiteSpace(evaluatorName))
         {
             await ToastWarning("Your name is required!");
             return;
         }
-        else
+
+        try
         {
             isProcessing = true;
-
             statusMessage = "Creating evaluator's token...";
-            await Task.Delay(2000); // aesthetics lang :)
+            StateHasChanged(); 
+
+            await Task.Delay(2000); // aesthetics
 
             jwt = Auth.GenerateJwt("evaluator@appsdev.net", "8128", evaluatorName);
 
             if (string.IsNullOrWhiteSpace(jwt))
             {
-                isProcessing = false;
                 statusMessage = "Auth token is required!";
                 await ToastWarning(statusMessage);
                 return;
@@ -100,13 +113,17 @@
             await Auth.LoginAsync(jwt);
             await ToastSuccess("Token accepted and successfully processed.");
             statusMessage = "Redirecting...";
-            await Task.Delay(2000); // aesthetics lang :)
-                
+            await Task.Delay(2000); // aesthetics
+
             Nav.NavigateTo("/", true);
-
         }
-
+        finally
+        {
+            isProcessing = false;
+            StateHasChanged();
+        }
     }
+
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

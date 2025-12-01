@@ -10,10 +10,8 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-//dotnet ef dbcontext scaffold "Server=LAandEnzo\SQLEXPRESS;Database=KOG_PAYSYS_2511112;Trusted_Connection=True;TrustServerCertificate=True;" Microsoft.EntityFrameworkCore.SqlServer --output-dir Models --context-dir Data --context AppDbContext --force
-//dotnet ef dbcontext scaffold "Server=.\SQLEXPRESS;Database=KOG_PAYSYS_2511112;Trusted_Connection=True;TrustServerCertificate=True" Microsoft.EntityFrameworkCore.SqlServer -o Models -c MyDbContext
+//dotnet ef dbcontext scaffold "Server=LAandEnzo\SQLEXPRESS;Database=apps-demo;Trusted_Connection=True;TrustServerCertificate=True;" Microsoft.EntityFrameworkCore.SqlServer --output-dir Models --context-dir Data --context AppDbContext --force
+//dotnet ef dbcontext scaffold "Server=.\SQLEXPRESS;Database=apps-demo;Trusted_Connection=True;TrustServerCertificate=True" Microsoft.EntityFrameworkCore.SqlServer -o Models -c MyDbContext
 
 builder.Services.AddHttpClient();
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7218/") });
@@ -41,7 +39,11 @@ app.UseStaticFiles();
 app.UseAntiforgery();
 
 
-
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    _ = db.Departments.Any();
+}
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
