@@ -10,8 +10,6 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 //dotnet ef dbcontext scaffold "Server=LAandEnzo\SQLEXPRESS;Database=apps-demo;Trusted_Connection=True;TrustServerCertificate=True;" Microsoft.EntityFrameworkCore.SqlServer --output-dir Models --context-dir Data --context AppDbContext --force
 //dotnet ef dbcontext scaffold "Server=.\SQLEXPRESS;Database=apps-demo;Trusted_Connection=True;TrustServerCertificate=True" Microsoft.EntityFrameworkCore.SqlServer -o Models -c MyDbContext
 
