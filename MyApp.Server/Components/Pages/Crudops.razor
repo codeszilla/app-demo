@@ -226,12 +226,19 @@ else
         statusMessage = $"Current input: {e.Value}"; } 
     private int currentCount = 0; 
     private void IncrementCount() { currentCount++; } 
-    protected override async Task OnInitializedAsync() { 
-        await LoadDepartments(); 
-
-    } 
-
    
+     private bool firstRender = true;
+  
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                await LoadDepartments();
+                StateHasChanged();
+            }
+        }
+
+
     private int editDepartmentId = -1; // -1 means no row is being edited
 
     private void StartEdit(int id)
@@ -261,6 +268,7 @@ else
 
 
     private async Task LoadDepartments() { 
+      
         departments = await Db.Departments.FromSqlRaw("EXEC GetDepartments").ToListAsync();
         if (departments.Count == 0)
         {
@@ -269,7 +277,7 @@ else
             return;
         }
         statusMessage = "Department(s) loaded successfully";
-        StateHasChanged(); 
+      //  StateHasChanged(); 
 
     } 
     private async Task AddDepartment() { 
