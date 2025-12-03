@@ -17,14 +17,24 @@
 
 
 
-    @if (!string.IsNullOrEmpty(statusMessage))
+    @if (!string.IsNullOrEmpty(dbWake))
     {
-        <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
-             @statusMessage
+        <div class="alert alert-danger alert-dismissible fade show text-center" role="alert">
+            @dbWake
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     }
 
+    @if (!string.IsNullOrEmpty(statusMessage))
+    {
+        <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
+            @statusMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+
+    
     <hr />  
 
 
@@ -222,6 +232,8 @@ else
     private string newDepartmentName = string.Empty; 
  private int newDepartmentStatus = 0; // default as inactive
     private string statusMessage = string.Empty; 
+    private string dbWake = string.Empty;
+
     private void OnInputChanged(ChangeEventArgs e) { 
         statusMessage = $"Current input: {e.Value}"; } 
     private int currentCount = 0; 
@@ -269,15 +281,25 @@ else
 
     private async Task LoadDepartments() { 
       
-        departments = await Db.Departments.FromSqlRaw("EXEC GetDepartments").ToListAsync();
-        if (departments.Count == 0)
+
+        try
         {
-            statusMessage = "No department records were found.";
-         
-            return;
+            departments = await Db.Departments.FromSqlRaw("EXEC GetDepartments").ToListAsync();
+
+            statusMessage = departments.Count == 0
+                ? "No department records found."
+                : "Departments loaded successfully.";
+
+            dbWake = string.Empty; 
         }
-        statusMessage = "Department(s) loaded successfully";
-      //  StateHasChanged(); 
+        catch (Exception ex)
+        {
+            var friendly = GetFriendlyDbErrorMessage(ex);     
+            dbWake = friendly;
+  
+        }
+
+
 
     } 
     private async Task AddDepartment() { 
@@ -317,10 +339,15 @@ else
             await LoadDepartments();
 
             statusMessage = $"{department.DName} was successfully updated.";
+            dbWake = string.Empty;
         }
         catch (Exception ex)
         {
-            await ToastWarning($"Error updating department: {ex.Message}");
+
+            var friendly = GetFriendlyDbErrorMessage(ex);
+            dbWake = friendly;
+          //  await ToastWarning(friendly);
+
         }
    
 
@@ -336,10 +363,13 @@ else
             await ToastSuccess("Department deleted successfully!");
             await LoadDepartments();
             statusMessage = $"{department.DName} was successfully deleted.";
+            dbWake = string.Empty;
         }
         catch (Exception ex)
         {
-            await ToastWarning($"Error deleting department: {ex.Message}");
+            var friendly = GetFriendlyDbErrorMessage(ex);
+            dbWake = friendly;
+            //await ToastWarning(friendly);
         }
     }
 
@@ -366,9 +396,26 @@ else
 
            await  UpdateDepartment(department);
         }
+
+
     }
 
 
+    private string GetFriendlyDbErrorMessage(Exception ex)
+    {
+        if (ex.InnerException?.Message.Contains("timeout", StringComparison.OrdinalIgnoreCase) == true ||
+            ex.Message.Contains("timeout", StringComparison.OrdinalIgnoreCase))
+        {
+            return "Database is asleep or not responding. Please wait a few seconds and try again.";
+        }
 
+        if (ex.InnerException?.Message.Contains("paused", StringComparison.OrdinalIgnoreCase) == true ||
+            ex.Message.Contains("paused", StringComparison.OrdinalIgnoreCase))
+        {
+            return "Database is currently paused. Waking up the server… please retry shortly.";
+        }
+
+        return "A database error occurred. Please try again.";
+    }
 
 }
