@@ -26,7 +26,7 @@ var app = builder.Build();
 
 // ================================
 // HELPER FOR DB SLEEP ERRORS
-// ================================
+// ======================================
 string FriendlyStartupDbError(Exception ex)
 {
     if (ex.Message.Contains("timeout", StringComparison.OrdinalIgnoreCase) ||
@@ -40,9 +40,9 @@ string FriendlyStartupDbError(Exception ex)
     return "A database error occurred during startup.";
 }
 
-// ================================
+// =====================================
 // DB CHECK DURING STARTUP (SAFE)
-// ================================
+// =====================================
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
