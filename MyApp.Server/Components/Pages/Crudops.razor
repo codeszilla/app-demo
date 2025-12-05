@@ -232,7 +232,7 @@ else
     private string newDepartmentName = string.Empty; 
  private int newDepartmentStatus = 0; // default as inactive
     private string statusMessage = string.Empty; 
-    private string dbWake = string.Empty;
+    private string dbWake = "The Free Tier database was asleep. The APP is waking it up—please try again shortly.";
 
     private void OnInputChanged(ChangeEventArgs e) { 
         statusMessage = $"Current input: {e.Value}"; } 
