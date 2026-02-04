@@ -19,9 +19,7 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<Department> Departments { get; set; }
 
-  //  protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseSqlServer("Server=.\\SQLEXPRESS;Database=apps-demo;Trusted_Connection=True;TrustServerCertificate=True");
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseSqlServer("Server=tcp:appsdevnet.database.windows.net,1433;Initial Catalog=apspdevnet;Persist Security Info=False;User ID=samakalawa;Password=ik@lawan@poKami!!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseSqlServer("Server=.\\SQLEXPRESS;Database=apps-demo;Trusted_Connection=True;TrustServerCertificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
