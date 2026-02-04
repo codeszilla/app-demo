@@ -16,14 +16,14 @@ namespace MyApp.Server.Controllers
             _context = context;
         }
 
-        // GET: api/departments
+    
         [HttpGet]
         public async Task<IEnumerable<Department>> Get()
         {
             return await _context.Departments.ToListAsync();
         }
 
-        // GET: api/departments/5
+
         [HttpGet("{id}")]
         public async Task<ActionResult<Department>> Get(int id)
         {
@@ -32,7 +32,7 @@ namespace MyApp.Server.Controllers
             return department;
         }
 
-        // POST: api/departments
+   
         [HttpPost]
         public async Task<ActionResult<Department>> Post(Department department)
         {
@@ -41,7 +41,7 @@ namespace MyApp.Server.Controllers
             return CreatedAtAction(nameof(Get), new { id = department.DId }, department);
         }
 
-        // PUT: api/departments/5
+       
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, Department department)
         {
@@ -53,7 +53,7 @@ namespace MyApp.Server.Controllers
             return NoContent();
         }
 
-        // DELETE: api/departments/5
+   
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
