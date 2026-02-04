@@ -2,6 +2,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using MyApp.Server.Components;
+using MyApp.Server.Data;
 using MyApp.Server.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -77,7 +78,6 @@ app.MapRazorComponents<App>()
 app.Run();
 
 //dotnet ef dbcontext scaffold "Server=LAandEnzo\SQLEXPRESS;Database=apps-demo;Trusted_Connection=True;TrustServerCertificate=True;" Microsoft.EntityFrameworkCore.SqlServer --output-dir Models --context-dir Data --context AppDbContext --force
-
 //dotnet ef dbcontext scaffold "Server=LAandEnzo\SQLEXPRESS;Database=apps-demo;Trusted_Connection=True;TrustServerCertificate=True;" Microsoft.EntityFrameworkCore.SqlServer --output-dir Models --context-dir Data --context AppDbContext --force
 //dotnet ef dbcontext scaffold "Server=.\SQLEXPRESS;Database=apps-demo;Trusted_Connection=True;TrustServerCertificate=True" Microsoft.EntityFrameworkCore.SqlServer -o Models -c MyDbContext
 
