@@ -1,6 +1,5 @@
-
-
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi;
 using MyApp.Server.Components;
 using MyApp.Server.Data;
 using MyApp.Server.Models;
@@ -23,11 +22,44 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<LogoutService>();
 
+builder.Services.AddControllers(); // <<< Must have this
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+
+// Add Swagger services
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+});
+
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
+
+
 var app = builder.Build();
 
-// ================================
-// HELPER FOR DB SLEEP ERRORS
-// ======================================
+app.MapControllers();
+app.UseCors("AllowAll");
+
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+});
+
+
 string FriendlyStartupDbError(Exception ex)
 {
     if (ex.Message.Contains("timeout", StringComparison.OrdinalIgnoreCase) ||
