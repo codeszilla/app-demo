@@ -1,0 +1,271 @@
+﻿@page "/"
+@inject HttpClient Http
+@using MyApp.Shared.Models
+
+<PageTitle>Departments</PageTitle>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="fw-bold text-primary">Department</h3>
+    <button class="btn btn-success" @onclick="ShowAddModal">
+        + New Department
+    </button>
+</div>
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger text-center">@errorMessage</div>
+}
+
+@if (departments == null)
+{
+    <p><em>Loading... <br /> Please be patient! The app uses a free-tier database that may take a moment to wake up. Thanks for waiting!</em></p>
+
+}
+else if (departments.Count == 0)
+{
+    <p>No department records found.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Department Name</th>
+                <th>Status</th>
+                <th style="width:160px;text-align:center">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var d in departments)
+            {
+                <tr>
+                    <td>@d.DId</td>
+
+                    <td>
+                        @if (editId == d.DId)
+                        {
+                            <input class="form-control"
+                                   @bind="editModel.DName" />
+                        }
+                        else
+                        {
+                            @d.DName
+                        }
+                    </td>
+
+                    <td>
+                        @if (editId == d.DId)
+                        {
+                            <select class="form-select"
+                                    @bind="editModel.DStats">
+                                <option value="0">Inactive</option>
+                                <option value="1">Active</option>
+                            </select>
+                        }
+                        else
+                        {
+                            <span class="badge @(d.DStats == 1 ? "bg-success" : "bg-danger")">
+                                @(d.DStats == 1 ? "Active" : "Inactive")
+                            </span>
+                        }
+                    </td>
+
+                    <td class="text-center">
+                        @if (editId == d.DId)
+                        {
+                            <button class="btn btn-warning btn-sm me-1"
+                                    @onclick="ConfirmUpdate">
+                                <i class="bi bi-check-lg"></i>
+                            </button>
+                            <button class="btn btn-secondary btn-sm"
+                                    @onclick="CancelEdit">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        }
+                        else
+                        {
+                            <button class="btn btn-primary btn-sm me-1"
+                                    @onclick="() => StartEdit(d)">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm"
+                                    @onclick="() => ShowDeleteModal(d.DId)">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @if (showAddModal)
+    {
+        <div class="modal fade show d-block">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h5>Add Department</h5>
+                        <button class="btn-close" @onclick="CloseAddModal"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <input class="form-control mb-2"
+                               placeholder="Department Name"
+                               @bind="newDepartment.DName" />
+
+                        <select class="form-select"
+                                @bind="newDepartment.DStats">
+                            <option value="0">Inactive</option>
+                            <option value="1">Active</option>
+                       
+                        </select>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary"
+                                @onclick="CloseAddModal">
+                            Cancel
+                        </button>
+                        <button class="btn btn-success"
+                                @onclick="AddDepartment">
+                            Save
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="modal-backdrop fade show"></div>
+    }
+
+    @if (showDeleteModal)
+    {
+        <div class="modal fade show d-block">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h5>Confirm Delete</h5>
+                    </div>
+
+                    <div class="modal-body">
+                        Are you sure you want to delete this department?
+                    </div>
+
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary"
+                                @onclick="CloseDeleteModal">
+                            Cancel
+                        </button>
+                        <button class="btn btn-danger"
+                                @onclick="DeleteDepartment">
+                            Delete
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="modal-backdrop fade show"></div>
+    }
+
+
+
+}
+
+
+@code {
+    List<Department>? departments;
+
+    Department editModel = new();
+    Department newDepartment = new();
+
+    int editId = -1;
+    int deleteId = -1;
+
+    bool showAddModal;
+    bool showDeleteModal;
+
+    string errorMessage = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadDepartments();
+    }
+
+    async Task LoadDepartments()
+    {
+        try
+        {
+            departments = await Http.GetFromJsonAsync<List<Department>>(
+                "https://apps-demo.azurewebsites.net/api/Departments");
+        }
+        catch
+        {
+            errorMessage = "Failed to load departments.";
+        }
+    }
+
+    //  ADD 
+    void ShowAddModal() => showAddModal = true;
+    void CloseAddModal() => showAddModal = false;
+
+    async Task AddDepartment()
+    {
+        await 
+        Http.PostAsJsonAsync("https://apps-demo.azurewebsites.net/api/Departments",newDepartment);
+
+        newDepartment = new Department();
+        showAddModal = false;
+        await LoadDepartments();
+    }
+
+    //  EDIT 
+    void StartEdit(Department d)
+    {
+        editId = d.DId;
+        editModel = new Department
+        {
+            DId = d.DId,
+            DName = d.DName,
+            DStats = d.DStats
+        };
+    }
+
+    void CancelEdit()
+    {
+        editId = -1;
+        editModel = new();
+    }
+
+    async Task ConfirmUpdate()
+    {
+        await 
+        Http.PutAsJsonAsync(
+        $"https://apps-demo.azurewebsites.net/api/Departments/{editModel.DId}", editModel);
+
+        editId = -1;
+        await LoadDepartments();
+    }
+
+    //  DELETE 
+    void ShowDeleteModal(int id)
+    {
+        deleteId = id;
+        showDeleteModal = true;
+    }
+
+    void CloseDeleteModal() => showDeleteModal = false;
+
+    async Task DeleteDepartment()
+    {
+        await 
+        Http.DeleteAsync($"https://apps-demo.azurewebsites.net/api/Departments/{deleteId}");
+
+        showDeleteModal = false;
+        await LoadDepartments();
+    }
+}
